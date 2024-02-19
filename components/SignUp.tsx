@@ -141,7 +141,7 @@ Password: ${password}
           </button>
           <div className={S.option}>
             <input type='checkbox' id='show' />
-            <label htmlFor='show' className={S.checkboxLabel}>
+            <label htmlFor='show'>
               Não mostrar novamente
             </label>
           </div>
